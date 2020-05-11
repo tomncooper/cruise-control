@@ -1,5 +1,13 @@
-## A NOTE ON USING UUID/COOKIES
+## Contents
+
+- [Note on using UUIDs and Cookies in requests](#uuids-and-cookies)
+- [Get Requests](#get-requests)
+- [Post Requests](#post-requests)
+
+## UUIDs and Cookies
+
 **Please ensure proper use of UUIDs or cookies to interact with async endpoints.**
+
 Selected Cruise Control (CC) endpoints accept async calls to avoid blocking more than a configured period of time 
 (via `webserver.request.maxBlockTimeMs` configuration).
 If the server-side processing of such requests takes more than this configured time, along with a with `SC_ACCEPTED` code, 
@@ -7,7 +15,7 @@ CC returns a progress response.
 This response contains both (1) a `sessionId`, and (2) a UUID corresponding to the client cookie and the request, respectively.
 The completed response of an in-progress request can be retrieved within a predefined time.
 Using cookies, this response can be retrieved before the timeout is configured via `webserver.session.maxExpiryTimeMs`.
-Using the UUID, the timout is configured via relevant completed user task retention time configuration 
+Using the UUID, the timeout is configured via relevant completed user task retention time configuration 
 (see `completed.kafka.monitor.user.task.retention.time.ms`, `completed.cruise.control.monitor.user.task.retention.time.ms`,
 `completed.kafka.admin.user.task.retention.time.ms`, `completed.cruise.control.admin.user.task.retention.time.ms`,
 and `completed.user.task.retention.time.ms` ).
@@ -34,8 +42,10 @@ and `completed.user.task.retention.time.ms` ).
 * Note that a `User-Task-ID` or a `sessionId` and is applicable for an entire `URL`, including its parameters.
 Hence, the same endpoint with different parameters would create and use a different `User-Task-Id`.
 
-## GET REQUESTS
+## GET Requests
+
 The GET requests in Kafka Cruise Control REST API are for read only operations, i.e. the operations that do not have any external impacts. The GET requests include the following operations:
+
 * [Query the state of Cruise Control](#query-the-state-of-cruise-control)
 * [Query the current cluster load](#query-the-current-cluster-load)
 * [Query partition resource utilization](#query-partition-resource-utilization)
