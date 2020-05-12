@@ -1,10 +1,10 @@
 ## Contents
 
-- [Note on using UUIDs and Cookies in requests](#uuids-and-cookies)
+- [Using UUIDs and Cookies in asychronous requests](#uuids-and-cookies)
 - [Get Requests](#get-requests)
 - [Post Requests](#post-requests)
 
-## UUIDs and Cookies
+## Asynchronous Endpoints
 
 **Please ensure proper use of UUIDs or cookies to interact with async endpoints.**
 
@@ -20,17 +20,24 @@ Using the UUID, the timeout is configured via relevant completed user task reten
 `completed.kafka.admin.user.task.retention.time.ms`, `completed.cruise.control.admin.user.task.retention.time.ms`,
 and `completed.user.task.retention.time.ms` ).
 
-* Here is a quick recap of how to use **UUID** with requests using `cURL`:
+### UUIDs
+
+Here is an example how to use **UUID** with requests using `cURL`:
+
 1. Create a new request
 
  `curl -vv -X POST "http://CRUISE_CONTROL_HOST:9090/kafkacruisecontrol/remove_broker?brokerid=1234&dryrun=false"`
 
 2. Retrieve the `User-Task-ID` from response header, e.g. `User-Task-ID: 5ce7c299-53b3-48b6-b72e-6623e25bd9a8`
+
 3. Specifying the `User-Task-ID` in request that has not completed
 
  `curl -vv -X POST -H "User-Task-ID: 5ce7c299-53b3-48b6-b72e-6623e25bd9a8" "http://CRUISE_CONTROL_HOST:9090/kafkacruisecontrol/remove_broker?brokerid=1234&dryrun=false"`
 
-* Here is a quick recap of how to use **cookies** with requests using `cURL`:
+### Cookies
+
+Here is an example of how to use **cookies** with requests using `cURL`:
+
 1. Create a cookie associated with a new request
 
  `curl -X POST -c /tmp/mycookie-jar.txt "http://CRUISE_CONTROL_HOST:9090/kafkacruisecontrol/remove_broker?brokerid=1234&dryrun=false"`
@@ -39,8 +46,7 @@ and `completed.user.task.retention.time.ms` ).
 
  `curl -X POST -b /tmp/mycookie-jar.txt "http://CRUISE_CONTROL_HOST:9090/kafkacruisecontrol/remove_broker?brokerid=1234&dryrun=false"`
 
-* Note that a `User-Task-ID` or a `sessionId` and is applicable for an entire `URL`, including its parameters.
-Hence, the same endpoint with different parameters would create and use a different `User-Task-Id`.
+Note that a `User-Task-ID` or a `sessionId` and is applicable for an entire `URL`, including its parameters. Hence, the same endpoint with different parameters would create and use a different `User-Task-Id`.
 
 ## GET Requests
 
@@ -60,15 +66,16 @@ User can query the state of Kafka Cruise Control at any time by issuing a HTTP G
 
 Supported parameters are:
 
-| PARAMETER   | TYPE       | DESCPRIPTION | DEFAULT  | OPTIONAL|
-|-------------|------------|----------------------|----------|---------|
-| substates     | list    | list of components to return their state, available components are `analyzer`, `monitor`, `executor` and `anomaly_detector`     | all the components      |   yes | 
-| json     | boolean    | return in JSON format or not      | false      |   yes | 
-| verbose     | boolean    | return detailed state information      | false      |   yes | 
-| super_verbose     | boolean    | return more detailed state information      | false      |   yes |
-| doAs     | string    | propagated user by the trusted proxy service      | null      |   yes | 
+| PARAMETER     | TYPE       | DESCRIPTION                                                                                                                 | DEFAULT            | OPTIONAL |
+|---------------|------------|-----------------------------------------------------------------------------------------------------------------------------|--------------------|----------|
+| substates     | list       | list of components to return their state, available components are `analyzer`, `monitor`, `executor` and `anomaly_detector` | all the components | yes      | 
+| json          | boolean    | return in JSON format or not                                                                                                | false              | yes      | 
+| verbose       | boolean    | return detailed state information                                                                                           | false              | yes      | 
+| super_verbose | boolean    | return more detailed state information                                                                                      | false              | yes      |
+| doAs          | string     | propagated user by the trusted proxy service                                                                                | null               | yes      | 
 
 The returned state contains the following information:
+
 * **Monitor State**:
   * State: `NOT_STARTED` / `RUNNING` / `SAMPLING` / `PAUSED` / `BOOTSTRAPPING` / `TRAINING` / `LOADING`,
   * Bootstrapping progress (If state is `BOOTSTRAPPING`)
@@ -103,23 +110,24 @@ If `super_verbose` is set to `true`, the details about extrapolation made on met
 If `substates` is not set, the full state will be displayed; if it is set to the specific substate(s), only state(s) of interest will be displayed and response will be returned faster.
 
 ### Query the current cluster load
+
 Once Cruise Control Load Monitor shows it is in the `RUNNING` state, Users can use the following HTTP GET to get the cluster load:
 
     GET /kafkacruisecontrol/load
 
 Supported parameters are:
 
-| PARAMETER                 | TYPE      | DESCPRIPTION                                                                      | DEFAULT                       | OPTIONAL  |
-|---------------------------|-----------|-----------------------------------------------------------------------------------|-------------------------------|-----------|
-| start                     | long      | start time of the cluster load                                                    | time of earliest valid window | yes       |
-| end                       | long      | end time of the cluster load                                                      | current system time           | yes       |
-| time                      | long      | end time of the cluster load                                                      | current system time           | yes       | 
-| allow_capacity_estimation | boolean   | whether allow broker capacity to be estimated from other broker in the cluster    | true                          | yes       | 
-| populate_disk_info        | boolean   | whether show the load of each disk of broker                                      | false                         | yes       | 
-| capacity_only             | boolean   | whether show only the cluster capacity or the utilization, as well.               | false                         | yes       |
-| json                      | boolean   | return in JSON format or not                                                      | false                         | yes       | 
-| verbose                   | boolean   | return detailed state information                                                 | false                         | yes       |
-| doAs                      | string    | propagated user by the trusted proxy service                                      | null                          | yes       | 
+| PARAMETER                 | TYPE    | DESCRIPTION                                                                    | DEFAULT                       | OPTIONAL |
+|---------------------------|---------|--------------------------------------------------------------------------------|-------------------------------|----------|
+| start                     | long    | start time of the cluster load                                                 | time of earliest valid window | yes      |
+| end                       | long    | end time of the cluster load                                                   | current system time           | yes      |
+| time                      | long    | end time of the cluster load                                                   | current system time           | yes      | 
+| allow_capacity_estimation | boolean | whether allow broker capacity to be estimated from other broker in the cluster | true                          | yes      | 
+| populate_disk_info        | boolean | whether show the load of each disk of broker                                   | false                         | yes      | 
+| capacity_only             | boolean | whether show only the cluster capacity or the utilization, as well.            | false                         | yes      |
+| json                      | boolean | return in JSON format or not                                                   | false                         | yes      | 
+| verbose                   | boolean | return detailed state information                                              | false                         | yes      | 
+| doAs                      | string  | propagated user by the trusted proxy service                                   | null                          | yes      | 
 
 If the number of workload snapshots for the given timestamp is not sufficient to generate a good load model, an exception will be returned.
 
@@ -132,27 +140,28 @@ The response contains both load-per-broker and load-per-host information. This i
 NOTE: The load shown is only for the load from the valid partitions. i.e the partitions with enough metric samples. So please always check the `LoadMonitor`'s state(via `State` endpoint) to decide whether the workload is representative enough.
 
 ### Query partition resource utilization
+
 The following GET request gives the partition load sorted by the utilization of a given resource:
 
     GET /kafkacruisecontrol/partition_load
 
 Supported parameters are:
 
-| PARAMETER   | TYPE       | DESCPRIPTION | DEFAULT  | OPTIONAL|
-|-------------|------------|----------------------|----------|---------|
-| resource     | string    | resource type to sort partition load, available resource are `DISK`/`CPU`/`NW_IN`/`NW_OUT`    | `DISK`|   yes |
-| start     | long    | start time of the partition load     | time of earliest valid window|   yes |
-| end     | long    | end time of the partition load     | current system time|   yes |
-| entries     | integer    | number of partition load entries to report in response     | `MAX_INT`|   yes |
-| json     | boolean    | return in JSON format or not      | false      |   yes | 
-| allow_capacity_estimation     | boolean    | whether allow broker capacity be estimated   from other broker in the cluster   | true      |   yes |
-| max_load     | boolean    | whether report the max load for partition in windows     | false|   yes |
-| avg_load     | boolean    | whether report the average load for partition in windows     | false|   yes |
-| topic     | regex    | regular expression to filter partition load to report based on partition's topic    | null|   yes |
-| partition     | integer/range    | partition number(e.g. 10) range(e.g. 1-10) to filter partition load to report     | null|   yes |
-| min_valid_partition_ratio     | double    | minimal valid partition ratio requirement for cluster model    | null  | yes |
-| brokerid     | int    | broker id to to filter partition load to report     | null|   yes |
-| doAs     | string    | propagated user by the trusted proxy service      | null      |   yes |
+| PARAMETER                  | TYPE          | DESCRIPTION                                                                                | DEFAULT                       | OPTIONAL |
+|----------------------------|---------------|--------------------------------------------------------------------------------------------|-------------------------------|----------|
+| resource                   | string        | resource type to sort partition load, available resource are `DISK`/`CPU`/`NW_IN`/`NW_OUT` | `DISK`                        | yes      |
+| start                      | long          | start time of the partition load                                                           | time of earliest valid window | yes      |
+| end                        | long          | end time of the partition load                                                             | current system time           | yes      |
+| entries                    | integer       | number of partition load entries to report in response                                     | `MAX_INT`                     | yes      |
+| json                       | boolean       | return in JSON format or not                                                               | false                         | yes      | 
+| allow_capacity_estimation  | boolean       | whether allow broker capacity be estimated   from other broker in the cluster              | true                          | yes      |
+| max_load                   | boolean       | whether report the max load for partition in windows                                       | false                         | yes      |
+| avg_load                   | boolean       | whether report the average load for partition in windows                                   | false                         | yes      |
+| topic                      | regex         | regular expression to filter partition load to report based on partition's topic           | null                          | yes      |
+| partition                  | integer/range | partition number(e.g. 10) range(e.g. 1-10) to filter partition load to report              | null                          | yes      |
+| min_valid_partition_ratio  | double        | minimal valid partition ratio requirement for cluster model                                | null                          | yes      |
+| brokerid                   | int           | broker id to to filter partition load to report                                            | null                          | yes      |
+| doAs                       | string        | propagated user by the trusted proxy service                                               | null                          | yes      |
 
 The returned result would be a partition list sorted by the utilization of the specified resource in the time range specified by `start` and `end`. The resource can be `CPU`, `NW_IN`, `NW_OUT` and `DISK`. By default the `start` is the earliest monitored time, the `end` is current wall clock time, `resource` is `DISK`, and `entries` is the all partitions in the cluster.
 
@@ -163,20 +172,22 @@ The `min_valid_partition_ratio` specifies minimal monitored valid partition perc
 The `max_load` parameter specifies whether report the maximal historical value or not. The `avg_load` parameter specifies whether report the average historical value or not. If both are not specified or specified as `false`, for `DISK` resource, latest value will be reported; for `NW_IN`/`NW_OUT`/`CPU` resource, average value will be reported.
 
 ### Query partition and replica state
+
 The following GET request gives partition healthiness on the cluster:
 
     GET /kafkacruisecontrol/kafka_cluster_state
 
 Supported parameters are:
 
-| PARAMETER   | TYPE       | DESCPRIPTION | DEFAULT  | OPTIONAL|
-|-------------|------------|----------------------|----------|---------|
-| topic     | regex    | regular expression to filter partition state to report based on partition's topic    | null|   yes | 
-| json     | boolean    | return in JSON format or not      | false      |   yes | 
-| verbose     | boolean    | return detailed state information      | false      |   yes |
-| doAs     | string    | propagated user by the trusted proxy service      | null      |   yes | 
+| PARAMETER   | TYPE       | DESCRIPTION                                                                       | DEFAULT | OPTIONAL |
+|-------------|------------|-----------------------------------------------------------------------------------|---------|----------|
+| topic       | regex      | regular expression to filter partition state to report based on partition's topic | null    | yes      | 
+| json        | boolean    | return in JSON format or not                                                      | false   | yes      | 
+| verbose     | boolean    | return detailed state information                                                 | false   | yes      | 
+| doAs        | string     | propagated user by the trusted proxy service                                      | null    | yes      | 
 
-The returned result contains the following information
+The returned result contains the following information:
+
 * For each broker
   * Distribution of leader/follower/out-of-sync/offline replica information
   * Online/offline disks
@@ -185,28 +196,29 @@ The returned result contains the following information
   * Distribution of leader/follower/in-sync/out-of-sync/offline replica information
 
 ### Get optimization proposals
+
 The following GET request returns the optimization proposals generated based on the workload model of the given timestamp. The workload summary before and after the optimization will also be returned.
 
     GET /kafkacruisecontrol/proposals
 
 Supported parameters are:
 
-| PARAMETER   | TYPE       | DESCPRIPTION | DEFAULT  | OPTIONAL|
-|-------------|------------|----------------------|----------|---------|
-| ignore_proposal_cache     | boolean    | whether ignore the cached proposal or not| false|   yes | 
-| data_from     | string    | whether calculating proposal from available valid partitions or valid windows    | `VALID_WINDOWS`|   yes |
-| goals     | list    |  list of goals used to generate proposal   | all goals|   yes |
-| kafka_assigner     | boolean    |   whether use Kafka assigner mode to general proposal  | false|   yes |
-| allow_capacity_estimation     | boolean    | whether allow broker capacity to be estimated     | true      |   yes |
-| excluded_topics     | regex    |  regular expression to specify topic not to be considered for replica movement   | null|   yes |
-| use_ready_default_goals     | boolean    |  whether only using ready goals to generate proposal   | false|   yes |
-| exclude_recently_demoted_brokers     | boolean    | whether allow leader replicas to be moved to recently demoted broker    | false|   yes |
-| exclude_recently_removed_brokers     | boolean    | whether allow replicas to be moved to recently removed broker  | false|   yes |
-| destination_broker_ids     | boolean    |  specify brokers to move replicas to   | null|   yes |
-| rebalance_disk     | boolean    |  whether to balance load between brokers or between disks within broker   | false|   yes |
-| json     | boolean    | return in JSON format or not      | false      |   yes | 
-| verbose     | boolean    | return detailed state information      | false      |   yes |
-| doAs     | string    | propagated user by the trusted proxy service      | null      |   yes | 
+| PARAMETER                        | TYPE    | DESCRIPTION                                                                   | DEFAULT         | OPTIONAL |
+|----------------------------------|---------|-------------------------------------------------------------------------------|-----------------|----------|
+| ignore_proposal_cache            | boolean | whether ignore the cached proposal or not                                     | false           | yes      | 
+| data_from                        | string  | whether calculating proposal from available valid partitions or valid windows | `VALID_WINDOWS` | yes      |
+| goals                            | list    | list of goals used to generate proposal                                       | all goals       | yes      |
+| kafka_assigner                   | boolean | whether use Kafka assigner mode to general proposal                           | false           | yes      |
+| allow_capacity_estimation        | boolean | whether allow broker capacity to be estimated                                 | true            | yes      |
+| excluded_topics                  | regex   | regular expression to specify topic not to be considered for replica movement | null            | yes      |
+| use_ready_default_goals          | boolean | whether only using ready goals to generate proposal                           | false           | yes      |
+| exclude_recently_demoted_brokers | boolean | whether allow leader replicas to be moved to recently demoted broker          | false           | yes      |
+| exclude_recently_removed_brokers | boolean | whether allow replicas to be moved to recently removed broker                 | false           | yes      |
+| destination_broker_ids           | boolean | specify brokers to move replicas to                                           | null            | yes      |
+| rebalance_disk                   | boolean | whether to balance load between brokers or between disks within broker        | false           | yes      |
+| json                             | boolean | return in JSON format or not                                                  | false           | yes      | 
+| verbose                          | boolean | return detailed state information                                             | false           | yes      | 
+| doAs                             | string  | propagated user by the trusted proxy service                                  | null            | yes      | 
 
 Proposal can be generated based on **valid_window** or **valid_partitions**.
 
@@ -216,9 +228,9 @@ Proposal can be generated based on **valid_window** or **valid_partitions**.
 
 Users can only specify either `valid_windows` or `valid_partitions`, but not both.
 
-Kafka cruise control tries to precompute the optimization proposal in the background and caches the best proposal to serve when user queries. If users want to have a fresh proposal without reading it from the proposal cache, set the `ignore_proposal_cache` flag to true. The precomputing always uses available valid partitions to generate the proposals.
+Kafka cruise control tries to pre-compute the optimization proposal in the background (using the defined `defaul.goals`) and caches the best proposal to serve when user queries. If users want to have a fresh proposal without reading it from the proposal cache, set the `ignore_proposal_cache` flag to true. The pre-computation always uses available valid partitions to generate the proposals.
 
-By default the proposal will be returned from the cache where all the pre-defined goals are used. Detailed information about the reliability of the proposals will also be returned. If users want to run with a different set of goals, they can specify the `goals` parameter with the goal names (simple class name).
+By default the proposal will be returned from the cache where all the pre-defined `defaul.goals` are used. Detailed information about the reliability of the proposals will also be returned. If users want to run with a different set of goals, they can specify the `goals` parameter with the goal names (simple class name).
 
 If `verbose` is turned on, Cruise Control will return all the generated proposals. Otherwise a summary of the proposals will be returned.
 
@@ -226,32 +238,35 @@ If `kafka_assigner` is turned on, the proposals will be generated in Kafka Assig
 
 Users can specify `excluded_topics` to prevent certain topics' replicas from moving in the generated proposals.
 
-If `use_ready_default_goals` is turned on, Cruise Control will use whatever ready goals(based on available metric data) to calculate the proposals.
+If `use_ready_default_goals` is turned on, Cruise Control will use whatever ready goals (based on available metric data) to calculate the proposals.
 
 ### Query the user request result
+
 The following get request allows user to get a full list of all the active/completed(and not recycled) tasks inside Cruise Control, with their initial request detail(request time/IP address/request URL and parameter) and UUID information. User can then use the returned UUID and URL to fetch the original final result of the specific request.
 
     GET /kafkacruisecontrol/user_tasks
 
 Supported parameters are:
 
-| PARAMETER   | TYPE       | DESCPRIPTION | DEFAULT  | OPTIONAL|
-|-------------|------------|----------------------|----------|---------|
-| user_task_ids     | list    | comma separated UUIDs to filter the task results Cruise Control report  | all tasks|   yes | 
-| client_ids     | list    | comma separated IP addresses to filter the task results Cruise Control report    | all users|   yes | 
-| entries     | integer    | number of partition load entries to report in response     | `MAX_INT`|   yes |
-| endpoints     | list    | comma separated endpoints to filter the task results Cruise Control report    | all endpoints|   yes | 
-| types     | string    | comma separated HTTP request types to filter the task results Cruise Control report    | all request types|   yes | 
-| json     | boolean    | return in JSON format or not      | false      |   yes | 
-| fetch_completed_task     | boolean    | whether return the original request's final response     | false      |   yes |
-| doAs     | string    | propagated user by the trusted proxy service      | null      |   yes |
+| PARAMETER            | TYPE    | DESCRIPTION                                                                         | DEFAULT           | OPTIONAL |
+|----------------------|---------|-------------------------------------------------------------------------------------|-------------------|----------|
+| user_task_ids        | list    | comma separated UUIDs to filter the task results Cruise Control report              | all tasks         | yes      | 
+| client_ids           | list    | comma separated IP addresses to filter the task results Cruise Control report       | all users         | yes      | 
+| entries              | integer | number of partition load entries to report in response                              | `MAX_INT`         | yes      |
+| endpoints            | list    | comma separated endpoints to filter the task results Cruise Control report          | all endpoints     | yes      | 
+| types                | string  | comma separated HTTP request types to filter the task results Cruise Control report | all request types | yes      | 
+| json                 | boolean | return in JSON format or not                                                        | false             | yes      | 
+| fetch_completed_task | boolean | whether return the original request's final response                                | false             | yes      |
+| doAs                 | string  | propagated user by the trusted proxy service                                        | null              | yes      |
 
 User can use `user_task_ids`/`client_ids`/`endpoints`/`types` make Cruise Control only return requests they are interested. By default all the requests get returned.
 
 If `fetch_completed_task` is set to `true`, the original response of each request will be returned. In the case where a task completed with errors the response will be `CompletedWithError`.
 
 ## POST Requests
+
 The post requests of Kafka Cruise Control REST API are operations that will have impact on the Kafka cluster. The post operations include:
+
 * [Trigger a workload balance](#trigger-a-workload-balance)
 * [Add a list of new brokers to Kafka Cluster](#add-a-list-of-new-brokers-to-kafka-cluster)
 * [Decommission a list of brokers from the Kafka cluster](#decommission-a-list-of-brokers-from-the-kafka-cluster)
