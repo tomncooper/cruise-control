@@ -1,8 +1,24 @@
 ## Contents
 
-- [Using UUIDs and Cookies in asychronous requests](#uuids-and-cookies)
+- [Using UUIDs and Cookies with asychronous endpoints](#asychronous-endpoints)
 - [Get Requests](#get-requests)
+    * [Query the state of Cruise Control](#query-the-state-of-cruise-control)
+    * [Query the current cluster load](#query-the-current-cluster-load)
+    * [Query partition resource utilization](#query-partition-resource-utilization)
+    * [Query partition and replica state](#query-partition-and-replica-state)
+    * [Get optimization proposals](#get-optimization-proposals)
+    * [Query the user request result](#query-the-user-request-result)
 - [Post Requests](#post-requests)
+    * [Trigger a workload balance](#trigger-a-workload-balance)
+    * [Add a list of new brokers to Kafka Cluster](#add-a-list-of-new-brokers-to-kafka-cluster)
+    * [Decommission a list of brokers from the Kafka cluster](#decommission-a-list-of-brokers-from-the-kafka-cluster)
+    * [Fix offline replicas in Kafka cluster](#fix-offline-replicas-in-kafka-cluster)
+    * [Demote a list of brokers from the Kafka cluster](#demote-a-list-of-brokers-from-the-kafka-cluster)
+    * [Stop the current proposal execution task](#stop-the-current-proposal-execution-task)
+    * [Pause metrics load sampling](#pause-metrics-load-sampling)
+    * [Resume metrics load sampling](#resume-metrics-load-sampling)
+    * [Change Kafka topic configuration](#change-kafka-topic-configuration)
+    * [Change Cruise Control configuration](#change-cruise-control-configuration)
 
 ## Asynchronous Endpoints
 
@@ -50,14 +66,7 @@ Note that a `User-Task-ID` or a `sessionId` and is applicable for an entire `URL
 
 ## GET Requests
 
-The GET requests in Kafka Cruise Control REST API are for read only operations, i.e. the operations that do not have any external impacts. The GET requests include the following operations:
-
-* [Query the state of Cruise Control](#query-the-state-of-cruise-control)
-* [Query the current cluster load](#query-the-current-cluster-load)
-* [Query partition resource utilization](#query-partition-resource-utilization)
-* [Query partition and replica state](#query-partition-and-replica-state)
-* [Get optimization proposals](#get-optimization-proposals)
-* [Query the user request result](#query-the-user-request-result)
+The GET requests in Kafka Cruise Control REST API are for read only operations, i.e. the operations that do not have any external impacts.
 
 ### Query the state of Cruise Control
 User can query the state of Kafka Cruise Control at any time by issuing a HTTP GET request.
@@ -265,22 +274,12 @@ If `fetch_completed_task` is set to `true`, the original response of each reques
 
 ## POST Requests
 
-The post requests of Kafka Cruise Control REST API are operations that will have impact on the Kafka cluster. The post operations include:
-
-* [Trigger a workload balance](#trigger-a-workload-balance)
-* [Add a list of new brokers to Kafka Cluster](#add-a-list-of-new-brokers-to-kafka-cluster)
-* [Decommission a list of brokers from the Kafka cluster](#decommission-a-list-of-brokers-from-the-kafka-cluster)
-* [Fix offline replicas in Kafka cluster](#fix-offline-replicas-in-kafka-cluster)
-* [Demote a list of brokers from the Kafka cluster](#demote-a-list-of-brokers-from-the-kafka-cluster)
-* [Stop the current proposal execution task](#stop-the-current-proposal-execution-task)
-* [Pause metrics load sampling](#pause-metrics-load-sampling)
-* [Resume metrics load sampling](#resume-metrics-load-sampling)
-* [Change Kafka topic configuration](#change-kafka-topic-configuration)
-* [Change Cruise Control configuration](#change-cruise-control-configuration)
+The post requests of Kafka Cruise Control REST API are operations that will have impact on the Kafka cluster.
 
 **Most of the POST actions has a dry-run mode, which only generate the proposals and estimated result but not really execute the proposals.** To avoid accidentally triggering of data movement, by default all the POST actions are in dry run mode. **To let Kafka Cruise Control actually move data, users need to explicitly set `dryrun=false`.**
 
 ### Trigger a workload balance
+
 The following POST request will let Kafka Cruise Control rebalance a Kafka cluster
 
     POST /kafkacruisecontrol/rebalance
