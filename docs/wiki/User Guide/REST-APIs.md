@@ -286,32 +286,32 @@ The following POST request will let Kafka Cruise Control rebalance a Kafka clust
 
 Supported parameters are:
 
-| PARAMETER   | TYPE       | DESCPRIPTION | DEFAULT  | OPTIONAL|
-|-------------|------------|----------------------|----------|---------|
-| dryrun     | boolean    | whether dry-run the request or not| true|   yes | 
-| data_from     | string    | whether generate proposal from available valid partitions or valid windows    | `VALID_WINDOW`|   yes |
-| goals     | list    |  list of goals used to generate proposal   | all goals|   yes |
-| kafka_assigner     | boolean    |   whether use Kafka assigner mode to general proposal  | false|   yes |
-| allow_capacity_estimation     | boolean    | whether allow broker capacity to be estimated     | true      |   yes |
-| concurrent_partition_movements_per_broker     | integer    | upper bound of ongoing replica movements going into/out of each broker     | null      |   yes |
-| concurrent_intra_broker_partition_movements     | integer    | upper bound of ongoing replica movements between disks within each broker     | null      |   yes |
-| concurrent_leader_movements     | integer    | upper bound of ongoing leadership movements     | null      |   yes |
-| skip_hard_goal_check     | boolean    | Whether allow hard goals be skipped in proposal generation     | false      |   yes |
-| excluded_topics     | regex    |  regular expression to specify topic not to be considered for replica movement   | null|   yes |
-| use_ready_default_goals     | boolean    |  whether only use ready goals to generate proposal   | false|   yes |
-| exclude_recently_demoted_brokers     | boolean    | whether allow leader replicas to be moved to recently demoted broker    | false|   yes |
-| exclude_recently_removed_brokers     | boolean    | whether allow replicas to be moved to recently removed broker  | false|   yes |
-| replica_movement_strategies     | string    |  [replica movement strategy](https://github.com/linkedin/cruise-control/wiki/Pluggable-Components#replica-movement-strategy) to use   | null|   yes |
-| ignore_proposal_cache     | boolean    | whether ignore the cached proposal or not| false|   yes | 
-| replication_throttle     | long    | upper bound on the bandwidth used to move replicas (in bytes per second)  | null|   yes |
-| destination_broker_ids     | list    |  specify brokers to move replicas to   | null|   yes |
-| rebalance_disk     | boolean    |  whether balance load between disks within each broker or between brokers in cluster  | false|   yes |
-| json     | boolean    | return in JSON format or not      | false      |   yes | 
-| verbose     | boolean    | return detailed state information      | false      |   yes | 
-| reason     | string    | reason for the request     | "No reason provided"      |   yes |
-| doAs     | string    | propagated user by the trusted proxy service      | null      |   yes | 
+| PARAMETER                                 | TYPE    | DESCRIPTION                                                                         | DEFAULT              | OPTIONAL |
+|-------------------------------------------|---------|-------------------------------------------------------------------------------------|----------------------|----------|
+| dryrun                                    | boolean | whether dry-run the request or not                                                  | true                 | yes      | 
+| data_from                                 | string  | whether generate proposal from available valid partitions or valid windows          | `VALID_WINDOW`       | yes      |
+| goals                                     | list    | list of goals used to generate proposal                                             | all goals            | yes      |
+| kafka_assigner                            | boolean | whether use Kafka assigner mode to general proposal                                 | false                | yes      |
+| allow_capacity_estimation                 | boolean | whether allow broker capacity to be estimated                                       | true                 | yes      |
+| concurrent_partition_movements_per_broker | integer | upper bound of ongoing replica movements going into/out of each broker              | null                 | yes      |
+| concurrent_intra_partition_movements      | integer | upper bound of ongoing replica movements between disks within each broker           | null                 | yes      |
+| concurrent_leader_movements               | integer | upper bound of ongoing leadership movements                                         | null                 | yes      |
+| skip_hard_goal_check                      | boolean | Whether allow hard goals be skipped in proposal generation                          | false                | yes      |
+| excluded_topics                           | regex   | regular expression to specify topic not to be considered for replica movement       | null                 | yes      |
+| use_ready_default_goals                   | boolean | whether only use ready goals to generate proposal                                   | false                | yes      |
+| exclude_recently_demoted_brokers          | boolean | whether allow leader replicas to be moved to recently demoted broker                | false                | yes      |
+| exclude_recently_removed_brokers          | boolean | whether allow replicas to be moved to recently removed broker                       | false                | yes      |
+| replica_movement_strategies               | string  | [replica movement strategy](https://github.com/linkedin/cruise-control/wiki/Pluggable-Components#replica-movement-strategy) to use | null | yes |
+| ignore_proposal_cache                     | boolean | whether ignore the cached proposal or not                                           | false                | yes      | 
+| replication_throttle                      | long    | upper bound on the bandwidth used to move replicas                                  | null                 | yes      |
+| destination_broker_ids                    | list    | specify brokers to move replicas to                                                 | null                 | yes      |
+| rebalance_disk                            | boolean | whether balance load between disks within each broker or between brokers in cluster | false                | yes      |
+| json                                      | boolean | return in JSON format or not                                                        | false                | yes      | 
+| verbose                                   | boolean | return detailed state information                                                   | false                | yes      | 
+| reason                                    | string  | reason for the request                                                              | "No reason provided" | yes      | 
+| doAs                                      | string  | propagated user by the trusted proxy service                                        | null                 | yes      | 
 
-Similar to the [GET interface for getting proposals](https://github.com/linkedin/cruise-control/wiki/REST-APIs/_edit#get-optimization-proposals), the rebalance can also be based on available valid windows or available valid partitions.
+Similar to the [GET interface for getting proposals](#get-optimization-proposals), the rebalance can also be based on available valid windows or available valid partitions.
 
 User can specify goals to use for rebalance via `goals` parameter. When `goals` is provided, the cached proposals will be ignored.
 
