@@ -543,16 +543,16 @@ Some of Cruise Control's configs can be changed dynamically via `admin` endpoint
 
 Supported parameters are:
 
-| PARAMETER   | TYPE       | DESCPRIPTION | DEFAULT  | OPTIONAL|
-|-------------|------------|----------------------|----------|---------|
-| disable_self_healing_for     | list    | list of anomaly types to disable self-healing|   N/A | yes|
-| enable_self_healing_for     | list    | list of anomaly types to enable self-healing|   N/A | yes|
-| concurrent_partition_movements_per_broker     | integer    | upper bound of ongoing replica movements into/out of a broker  |   N/A | yes|
-| concurrent_intra_broker_partition_movements     | integer    | upper bound of ongoing replica movements between disks within a broker  |   N/A | yes|
-| concurrent_leader_movements     | integer    | upper bound of ongoing leadership movements |    N/A | yes|
-| drop_recently_removed_brokers     | list    | list of id of recently removed brokers to be dropped  |   N/A | yes|
-| drop_recently_demoted_brokers     | list    | list of id of recently demoted brokers to be dropped  |   N/A | yes|
-| doAs     | string    | propagated user by the trusted proxy service      | null      |   yes |
+| PARAMETER                                   | TYPE    | DESCRIPTION                                                            | DEFAULT | OPTIONAL |
+|---------------------------------------------|---------|------------------------------------------------------------------------|---------|----------|
+| disable_self_healing_for                    | list    | list of anomaly types to disable self-healing                          | N/A     | yes      |
+| enable_self_healing_for                     | list    | list of anomaly types to enable self-healing                           | N/A     | yes      |
+| concurrent_partition_movements_per_broker   | integer | upper bound of ongoing replica movements into/out of a broker          | 10      | yes      |
+| concurrent_intra_broker_partition_movements | integer | upper bound of ongoing replica movements between disks within a broker | 2       | yes      |
+| concurrent_leader_movements                 | integer | upper bound of ongoing leadership movements                            | 1000    | yes      |
+| drop_recently_removed_brokers               | list    | list of id of recently removed brokers to be dropped                   | N/A     | yes      |
+| drop_recently_demoted_brokers               | list    | list of id of recently demoted brokers to be dropped                   | N/A     | yes      |
+| doAs                                        | string  | propagated user by the trusted proxy service                           | null    | yes      |
 
 To Enable/disable self-healing, send POST request like:
 
